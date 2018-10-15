@@ -6,7 +6,6 @@ import (
 	"github.com/go-ole/go-ole/oleutil"
 	"flag"
 	"fmt"
-	"strings"
 )
 
 var path string
@@ -14,7 +13,7 @@ var name string
 
 func init() {
 	pathAddr := flag.String("p", "./", "可执行文件位置")
-	nameAddr := flag.String("n", "yc", "软件名")
+	nameAddr := flag.String("n", "yc", "快捷方式名称")
 	flag.Parse()
 	path = *pathAddr
 	name = *nameAddr
@@ -44,12 +43,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	pathLen := len(path)
-	if strings.LastIndex(path, "/") != pathLen-1 {
-		path = path + "/"
-	}
-
-	oleutil.PutProperty(idispatch, "TargetPath", path+name)
+	fmt.Println(path)
+	oleutil.PutProperty(idispatch, "TargetPath", path)
 	_, err = oleutil.CallMethod(idispatch, "Save")
 	fmt.Println("success")
 }
