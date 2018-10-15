@@ -13,7 +13,7 @@ var path string
 var name string
 
 func init() {
-	pathAddr := flag.String("p", "./", "快捷方式位置配置文件")
+	pathAddr := flag.String("p", "./", "可执行文件位置")
 	nameAddr := flag.String("n", "yc", "软件名")
 	flag.Parse()
 	path = *pathAddr
@@ -49,7 +49,7 @@ func main() {
 		path = path + "/"
 	}
 
-	oleutil.PutProperty(idispatch, "TargetPath", path+name+".exe")
+	oleutil.PutProperty(idispatch, "TargetPath", path+name)
 	_, err = oleutil.CallMethod(idispatch, "Save")
 	fmt.Println("success")
 }
