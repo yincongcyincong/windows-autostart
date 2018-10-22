@@ -10,29 +10,22 @@ import (
 
 var path string
 var name string
-var delete bool
+var start bool
 var autoStartPath string
 
 func init() {
 	pathAddr := flag.String("p", "./", "可执行文件位置")
 	nameAddr := flag.String("n", "yc", "快捷方式名称")
-	deleteAddr := flag.Bool("d", false, "取消开机自启动")
+	startAddr := flag.Bool("s", true, "取消开机自启动")
 	flag.Parse()
 	path = *pathAddr
 	name = *nameAddr
-	delete = *deleteAddr
+	start = *startAddr
 	autoStartPath = os.Getenv("appdata") + "/Microsoft/Windows/Start Menu/Programs/Startup/" + name + ".lnk"
 }
 
 func main() {
-	if delete {
-		err := os.Remove(autoStartPath)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-	} else {
+	if start {
 		ole.CoInitializeEx(0, ole.COINIT_APARTMENTTHREADED|ole.COINIT_SPEED_OVER_MEMORY)
 		oleShellObject, err := oleutil.CreateObject("WScript.Shell")
 		if err != nil {
@@ -56,6 +49,12 @@ func main() {
 		fmt.Println(path)
 		oleutil.PutProperty(idispatch, "TargetPath", path)
 		_, err = oleutil.CallMethod(idispatch, "Save")
+	} else {
+		err := os.Remove(autoStartPath)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 	fmt.Println("success")
 }
